@@ -2,19 +2,19 @@ from django.shortcuts import  HttpResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from . models import Movie
-from .serializers import MovieSerializer
+from . models import Review, WatchList, StreamPlatform
+from .serializers import WatchListSerializer
 
-class MovieListView(APIView):
+class WatchListView(APIView):
 
     def get(self, request):
-        movies = Movie.objects.all()
-        serialized = MovieSerializer(movies, many=True)
+        movies = WatchList.objects.all()
+        serialized = WatchListSerializer(movies, many=True)
         return Response(serialized.data) 
 
     def post(self, request):
         data = request.data 
-        serialized = MovieSerializer(data = data) 
+        serialized = WatchListSerializer(data = data) 
         if serialized.is_valid():
             serialized.save()
             return Response(serialized.data, status = 201)
@@ -22,17 +22,24 @@ class MovieListView(APIView):
             return Response(serialized.errors, status = 400) 
         
 
-class MovieDetailView(APIView):
+class WatchListDetailView(APIView):
 
     def get(self, request, pk):
-        movie = Movie.objects.get(pk=pk)
-        serialized = MovieSerializer(movie) 
+        try:
+            movie = WatchList.objects.get(pk=pk)
+        except:
+            return Response({"Error": "Not Found"}, status = 404)
+        
+        serialized = WatchListSerializer(movie) 
         return Response(serialized.data)
 
     def put(self, request, pk):
-        movie = Movie.objects.get(pk=pk)
+        try:
+            movie = WatchList.objects.get(pk=pk)
+        except:
+            return Response({"Error": "Not Found"}, status = 404)
         data = request.data 
-        serialized = MovieSerializer(movie, data = data)
+        serialized = WatchListSerializer(movie, data = data)
         if serialized.is_valid():
             serialized.save()
             return Response(serialized.data, status = 201) 
@@ -40,7 +47,7 @@ class MovieDetailView(APIView):
             return Response(serialized.errors, status = 400)
         
     def delete(self, request, pk):
-        movie = Movie.objects.get(pk=pk)
+        movie = WatchList.objects.get(pk=pk)
         movie.delete()
         return Response({"Status": "Movie Deleted"}, status = 204)
 

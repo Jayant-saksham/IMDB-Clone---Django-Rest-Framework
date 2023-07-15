@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from . models import Movie
+from . models import WatchList
 
 # def validate_function(value):
 
@@ -7,10 +7,10 @@ from . models import Movie
 #         raise serializers.ValidationError('Des must be more than 5 characters')
 #     return value 
 
-class MovieSerializer(serializers.ModelSerializer):
+class WatchListSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Movie 
+        model = WatchList 
         fields = '__all__'
         # exclude = ['active']
 
